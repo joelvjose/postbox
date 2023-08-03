@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router,Routes,Route } from 'react-router-dom'
+import PrivateRoutes from './utils/PrivateRoutes'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import Login from './pages/login';
+import Signup from './pages/signup';
+import Home from './pages/home';
+import Dashboard from './pages/Dashboard';
+import UsersList from './pages/admin/UsersList';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { checkAuth } from './redux/Slice';
+
 
 function App() {
+
+  const dispatch = useDispatch(); 
+
+  useEffect(()=>{
+    dispatch(checkAuth());
+  },[dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} exact/>
+          <Route path="/signup" element={<Signup />}/>
+
+          <Route element={<PrivateRoutes/>}>
+              <Route element={<Home/>} path='/home' />
+          </Route>
+          <Route element={<PrivateRoutes/>}>
+              <Route element={<Dashboard/>} path='/admin' />
+          </Route>
+          <Route element={<PrivateRoutes/>}>
+              <Route element={<UsersList/>} path='/users' />
+          </Route>
+        </Routes>
+      </Router>
+      <ToastContainer />
+    </>
   );
 }
 
