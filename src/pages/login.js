@@ -35,9 +35,9 @@ const Login = () => {
     if (isSuperuser){
      return <Navigate to='/admin'/>
     // navigate("/admin");
-    }  
+    }else{
     navigate("/home");
-    
+    }
   }
 
   const toSignup=()=>{

@@ -33,6 +33,31 @@ const UsersList = () => {
     fetchUsers();
   },[]);
 
+  const blockUser = async (id) => {
+    const accessToken = localStorage.getItem('access_token');
+    try {
+        const response = await fetch(`${BASE_URL}/blockuser/${id}`, {
+          method:'GET',
+          headers:{
+            Accept: 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        console.log(response)
+        setUsers((prevUsers) =>
+            prevUsers.map((user) =>
+                user.id === id ? { ...user, is_active: !user.is_active } : user
+            )
+        );
+
+    } catch {
+        console.log("error")
+
+    }
+
+
+}
+
   return (
     <div className="flex">
       <div className="basis-[20%] h-[100vh] border">
@@ -49,7 +74,7 @@ const UsersList = () => {
                 <th className="px-4 py-2  text-white ">Image</th>
                 <th className="px-4 py-2  text-white">Username</th>
                 <th className="px-4 py-2  text-white ">Email</th>
-                <th className="px-4 py-2  text-white ">Active</th>
+                <th className="px-4 py-2  text-white ">Name</th>
                 <th className="px-4 py-2  text-white ">Edit</th>
               </tr>
             </thead>
@@ -57,16 +82,13 @@ const UsersList = () => {
             <tbody>
               {users.map((item) => (
                 <tr key={item.id} className="bg-gray-100 text-center ">
-                  <td className=" flex justify-center px-4 py-2 "><img className='w-10 h-10 rounded-md' alt={item.username} src={`${BASE_URL}${item.display_pic}`}/></td>
+                  <td className=" flex justify-center px-4 py-2 "><img className='w-16 h-16 rounded-full' alt={item.username} src={`${BASE_URL}${item.display_pic}`}/></td>
                   <td className=" px-4 py-2 ">{item.username}</td>
                   <td className="px-4 py-2 ">{item.email}</td>
-                  <td className="px-4 py-2 ">{item.is_active}</td>
+                  <td className="px-4 py-2 ">{item.first_name} {item.last_name}</td>
                   <td className="px-4 py-2 ">
-                    <button
-                      className="bg-red-600 rounded-md p-2 text-white font-bold hover:bg-red-800 relative"
-                      onClick={()=>{}}
-                    >
-                      
+                    <button className="bg-gray-500 rounded-md p-2 text-white font-bold hover:bg-red-600 relative" onClick={() => blockUser(item.id)}>
+                        {item.is_active ? 'Block' : 'unblock'}
                     </button>
                   </td>
                 </tr>
